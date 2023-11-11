@@ -67,21 +67,42 @@ router.get("/get_task/:id", (req, res) => {
 router.put("/update_task/:id", (req, res) => {
   const task_id = req.params.id;
 
-  Task.findByIdAndUpdate(task_id, {$set: req.body})
+  Task.findByIdAndUpdate(task_id, { $set: req.body })
     .then((result) => {
       console.log(result);
       return res.status(200).json({
         success: true,
-        message: "Task Updated Succefully"
-      })
+        message: "Task Updated Succefully",
+      });
     })
     .catch((err) => {
       console.error(err);
       return res.status(400).json({
         success: false,
-        message: "Task Updated Fail"
-      })
+        message: "Task Updated Fail",
+      });
     });
-}); 
+});
+
+// delete task
+router.delete("/delete_task/:id", (req, res) => {
+  const task_id = req.params.id;
+
+  Task.findByIdAndDelete(task_id)
+    .then((result) => {
+      return res.status(200).json({
+        success: true,
+        deletedTask: result,
+        message: "Delete Successfully",
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(400).json({
+        success: false,
+        message: "Delete Fail",
+      });
+    });
+});
 
 module.exports = router;
