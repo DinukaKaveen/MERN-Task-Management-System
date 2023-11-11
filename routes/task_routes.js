@@ -3,6 +3,7 @@ const Task = require("../models/tasks");
 
 const router = express.Router();
 
+// save task
 router.post("/new_task", (req, res) => {
   const newTask = new Task(req.body);
 
@@ -24,6 +25,7 @@ router.post("/new_task", (req, res) => {
     });
 });
 
+// get tasks
 router.get("/view_tasks", (req, res) => {
   Task.find()
     .then((result) => {
@@ -36,8 +38,28 @@ router.get("/view_tasks", (req, res) => {
       console.error(err);
       return res.status(400).json({
         success: false,
-        message: "Tasks Loading Fail"
-      })
+        message: "Tasks Loading Fail",
+      });
+    });
+});
+
+//get task by id
+router.get("/get_task/:id", (req, res) => {
+  const task_id = req.params.id;
+
+  Task.findById(task_id)
+    .then((result) => {
+      return res.status(200).json({
+        success: true,
+        task: result,
+      });
+    })
+    .catch((err) => {
+      console.error(err);
+      return res.status(400).json({
+        success: false,
+        message: "Task Loading Fail",
+      });
     });
 });
 
