@@ -5,7 +5,10 @@ const taskRoutes = require("./routes/task_routes");
 
 const app = express();
 
-app.use(bodyParser);
+//app MiddleWare
+app.use(bodyParser.json());
+
+//route MiddleWare
 app.use(taskRoutes);
 
 const PORT = 8000;
