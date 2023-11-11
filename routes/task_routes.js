@@ -4,7 +4,7 @@ const Task = require("../models/tasks");
 const router = express.Router();
 
 router.post("/new_task", (req, res) => {
-  let newTask = new Task(req.body);
+  const newTask = new Task(req.body);
 
   newTask
     .save()
