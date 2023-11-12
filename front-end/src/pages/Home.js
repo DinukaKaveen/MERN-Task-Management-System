@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import DataTable from "react-data-table-component";
+import { Link } from "react-router-dom";
 
 function Home() {
   const [tasks, setTasks] = useState([]);
@@ -12,7 +13,11 @@ function Home() {
   const loadTasks = async () => {
     const result = await axios.get("/view_tasks");
     setTasks(result.data.tasks);
-    console.log(result.data.tasks);
+  };
+
+  const deleteTask = async (id) => {
+    await axios.delete(`/delete_task/${id}`);
+    loadTasks();
   };
 
   const columns = [
@@ -45,6 +50,28 @@ function Home() {
       name: "Task Status",
       selector: (row) => row.taskStatus,
       sortable: true,
+    },
+    {
+      name: "Action",
+      selector: (row) => (
+        <div>
+          <Link
+            to={`/update_task/${row._id}`}
+            type="button"
+            className="text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 font-medium rounded-lg px-2.5 py-1.5 text-sm text-center mr-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400"
+          >
+            <i className="fa-solid fa-edit"></i>
+          </Link>
+
+          <button
+            type="button"
+            onClick={() => deleteTask(row._id)}
+            className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 font-medium rounded-lg px-2.5 py-1.5 text-sm text-center mr-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
+          >
+            <i className="fa-solid fa-trash"></i>
+          </button>
+        </div>
+      ),
     },
   ];
 
