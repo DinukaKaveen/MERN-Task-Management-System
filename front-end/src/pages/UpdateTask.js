@@ -1,6 +1,57 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 function UpdateTask() {
+  const { id } = useParams();
+  const [message, setMessage] = useState("");
+  const [taskDetails, setTaskDetails] = useState({
+    taskName: "",
+    taskDescription: "",
+    addedDate: "",
+    dueDate: "",
+    priority: "",
+    taskStatus: "",
+  });
+
+  useEffect(() => {
+    loadTask();
+  }, []);
+
+  const onInputChange = (e) => {
+    setTaskDetails({ ...taskDetails, [e.target.name]: e.target.value });
+  };
+
+  const loadTask = async () => {
+    await axios
+      .get(`/get_task/${id}`)
+      .then((response) => {
+        if (response.data.success) {
+          setTaskDetails(response.data.task);
+        }
+      })
+      .catch((error) => {
+        setMessage(error);
+      });
+  };
+
+  const submit = async (e) => {
+    e.preventDefault();
+
+    await axios
+      .put(`/update_task/${id}`, taskDetails)
+      .then((response) => {
+        if (response.data.success) {
+          setMessage(response.data.message);
+        } else {
+          setMessage(response.data.message);
+        }
+      })
+      .catch((error) => {
+        setMessage(error);
+      });
+  };
+
   return (
     <div>
       <div className="p-4 sm:ml-64">
@@ -48,7 +99,142 @@ function UpdateTask() {
             Update Task
           </h2>
           <br />
-          Update Task
+
+          <div>{message}</div>
+          <br />
+
+          <form onSubmit={(e) => submit(e)}>
+            <div className="relative z-0 w-full mb-6 group">
+              <input
+                type="text"
+                name="taskName"
+                id="taskName"
+                value={taskDetails.taskName}
+                onChange={(e) => onInputChange(e)}
+                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+                required
+              />
+              <label
+                htmlFor="taskName"
+                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >
+                Task Name
+              </label>
+            </div>
+            <div className="relative z-0 w-full mb-6 group">
+              <textarea
+                rows={3}
+                type="text"
+                name="taskDescription"
+                id="taskDescription"
+                value={taskDetails.taskDescription}
+                onChange={(e) => onInputChange(e)}
+                className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                placeholder=" "
+                required
+              />
+              <label
+                htmlFor="taskDescription"
+                className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+              >
+                Task Description
+              </label>
+            </div>
+            <br />
+            <div className="grid md:grid-cols-2 md:gap-6">
+              <div className="relative z-0 w-full mb-6 group">
+                <input
+                  type="date"
+                  name="addedDate"
+                  id="addedDate"
+                  value={taskDetails.addedDate}
+                  onChange={(e) => onInputChange(e)}
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="addedDate"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Added Date
+                </label>
+                {taskDetails.addedDate}
+              </div>
+              <div className="relative z-0 w-full mb-6 group">
+                <input
+                  type="date"
+                  name="dueDate"
+                  id="dueDate"
+                  value={taskDetails.dueDate}
+                  onChange={(e) => onInputChange(e)}
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                />
+                <label
+                  htmlFor="dueDate"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Due Date
+                </label>
+                {taskDetails.dueDate}
+              </div>
+            </div>
+            <br />
+            <div className="grid md:grid-cols-2 md:gap-6">
+              <div className="relative z-0 w-full mb-6 group">
+                <select
+                  name="priority"
+                  id="priority"
+                  value={taskDetails.priority}
+                  onChange={(e) => onInputChange(e)}
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                >
+                  <option>Select</option>
+                  <option>High</option>
+                  <option>Moderate</option>
+                  <option>Low</option>
+                </select>
+                <label
+                  htmlFor="priority"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Priority
+                </label>
+              </div>
+              <div className="relative z-0 w-full mb-6 group">
+                <select
+                  name="taskStatus"
+                  id="taskStatus"
+                  value={taskDetails.taskStatus}
+                  onChange={(e) => onInputChange(e)}
+                  className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
+                  placeholder=" "
+                  required
+                >
+                  <option>Select</option>
+                  <option>Pending</option>
+                  <option>Completed</option>
+                </select>
+                <label
+                  htmlFor="taskStatus"
+                  className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
+                >
+                  Task Status
+                </label>
+              </div>
+            </div>
+            <button
+              type="submit"
+              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            >
+              Submit
+            </button>
+          </form>
         </div>
       </div>
     </div>
