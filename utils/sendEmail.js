@@ -1,6 +1,7 @@
 const nodemailer = require("nodemailer");
 
 module.exports = async (email, subject, text) => {
+
   try {
     const transporter = nodemailer.createTransport({
       host: process.env.HOST,
@@ -20,10 +21,11 @@ module.exports = async (email, subject, text) => {
     });
     console.log("Email Sent Successfully");
 
-  } catch (error) {
+  } 
+  catch (error) {
     console.log("Email Not Sent!");
     console.log(error);
     return error;
   }
-  
+
 };
