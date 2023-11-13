@@ -14,8 +14,7 @@ app.use(cors());
 app.use(taskRoutes);
 
 const PORT = 8000;
-const DB_URL =
-  "mongodb+srv://dinuka:1234@cluster0.ozczact.mongodb.net/?retryWrites=true&w=majority";
+const DB_URL = "mongodb+srv://dinuka:1234@cluster0.ozczact.mongodb.net/?retryWrites=true&w=majority";
 
 // coonect app with MongoDB
 mongoose
@@ -27,6 +26,7 @@ mongoose
     console.log("DB Connection Error: ", err);
   });
 
+  
 // listen express app on port 8000
 app.listen(PORT, () => {
   console.log(`App is running on port ${PORT}`);
