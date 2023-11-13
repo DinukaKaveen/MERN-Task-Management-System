@@ -1,7 +1,6 @@
 const express = require("express");
-const Task = require("../models/tasks");
-
 const router = express.Router();
+const Task = require("../models/tasks");
 
 // save task
 router.post("/new_task", (req, res) => {
