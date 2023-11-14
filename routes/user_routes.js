@@ -93,7 +93,7 @@ router.post("/login", async (req, res) => {
     }
 
     if (user && validPassword && user.verified) {
-      return res.status(200).json({ success: true, message: "Login successuflly" });
+      return res.status(200).json({ success: true, message: "Login successufully" });
     }
 
   } catch (error) {
