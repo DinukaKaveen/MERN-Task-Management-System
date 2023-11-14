@@ -97,7 +97,15 @@ function Home() {
     setSearchText(event.target.value);
   };
 
-  
+  const filteredData = tasks.filter(
+    (item) =>
+      item.taskName.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.taskDescription.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.addedDate.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.dueDate.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.priority.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.taskStatus.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   return (
     <div>
