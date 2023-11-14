@@ -33,39 +33,14 @@ router.post("/register", async (req, res) => {
     // Save the user to the database
     await user.save();
 
-    // Generate a verification token
-    const jwtSecretKey = crypto.randomBytes(32).toString("hex");
-    const token = jwt.sign({ userId: user._id }, jwtSecretKey, {
-      expiresIn: "1d",
+    // Send verification email
+    sendVerificationEmail(user.email, user._id);
+
+    res.status(200).json({
+      message:
+        "User registered successfully. Check your email for verification.",
     });
-
-    // Send a verification email
-    const transporter = nodemailer.createTransport({
-      host: process.env.HOST,
-      service: process.env.SERVICE,
-      port: Number(process.env.EMAIL_PORT),
-      secure: Boolean(process.env.SECURE),
-      auth: {
-        user: process.env.USER,
-        pass: process.env.PASS,
-      },
-    });
-
-    const verificationLink = `${process.env.BASE_URL}/${user.id}/verify/${token}`;
-
-    await transporter.sendMail({
-      from: process.env.USER,
-      to: user.email,
-      subject: "Email Verification",
-      html: `Click <a href="${verificationLink}">here</a> to verify your email.`,
-    });
-
-    res
-      .status(201)
-      .json({ message: "User registered. Check your email for verification." });
-
-  } 
-  catch (error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
@@ -74,23 +49,97 @@ router.post("/register", async (req, res) => {
 // email verify
 router.get("/:id/verify/:token/", async (req, res) => {
   try {
-    // Find the user with user id
+    // find the user with user id
     const user = await User.findOne({ _id: req.params.id });
 
     if (user) {
-      // Update the user to mark as verified
+      // update the user to mark as verified
       await User.updateOne({ _id: user._id, verified: true });
 
       res.json({ message: "Email verification successful." });
-    } 
-    else {
-      res.json({ message: "User not found." }); 
+    } else {
+      res.json({ message: "User not found." });
     }
-  }
-  catch (error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
   }
 });
+
+// user login
+router.post("/login", async (req, res) => {
+  try {
+    // check if the email is already registered
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(401).json({ success: false, message: "Your email is not registered" });
+    }
+
+    // check password
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+    if (!validPassword) {
+      return res.status(401).json({ success: false, message: "Invalid Password" });
+    }
+
+    // resend verification email (if not verified)
+    if (!user.verified) {
+      sendVerificationEmail(user.email, user._id);
+      return res
+        .status(401)
+        .json({ success: false, message: "An Email sent to your account please verify" });
+    }
+
+    if (user && validPassword && user.verified) {
+      return res.status(200).json({ success: true, message: "Login successuflly" });
+    }
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+
+//-------------------------------------
+// Email sending function (nodemailer)
+//-------------------------------------
+function sendVerificationEmail(email, user_id) {
+  // Generate a verification token
+  const jwtSecretKey = crypto.randomBytes(32).toString("hex");
+  const token = jwt.sign({ userId: user_id }, jwtSecretKey, {
+    expiresIn: "1d",
+  });
+
+  // Send a verification email
+  const transporter = nodemailer.createTransport({
+    host: process.env.HOST,
+    service: process.env.SERVICE,
+    port: Number(process.env.EMAIL_PORT),
+    secure: Boolean(process.env.SECURE),
+    auth: {
+      user: process.env.USER,
+      pass: process.env.PASS,
+    },
+  });
+
+  const verificationLink = `${process.env.BASE_URL}/${user_id}/verify/${token}`;
+
+  transporter
+    .sendMail({
+      from: process.env.USER,
+      to: email,
+      subject: "Email Verification",
+      html: `Click <a href="${verificationLink}">here</a> to verify your email.`,
+    })
+    .then(() => {
+      console.log("Email sent successfully");
+    })
+    .catch(() => {
+      console.error("Email sent fail");
+    });
+}
 
 module.exports = router;
