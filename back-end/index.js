@@ -10,7 +10,13 @@ const app = express();
 
 //app MiddleWare
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors(
+  {
+    origin: ["https://mern-task-management-system-front-end.vercel.app"],
+    methods: ["POST", "GET", "UPDATE", "DELETE"],
+    credentials: true
+  }
+));
 
 //route MiddleWare
 app.use(taskRoutes);
