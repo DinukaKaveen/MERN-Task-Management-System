@@ -56,9 +56,9 @@ router.get("/:id/verify/:token", async (req, res) => {
       // update the user to mark as verified
       await User.updateOne({ _id: user._id, verified: true });
 
-      res.json({ message: "Email verification successful." });
+      res.json({ success: true, message: "Email Verification Successful." });
     } else {
-      res.json({ message: "User not found." });
+      res.json({ success: false, message: "User Not Found 404" });
     }
   } catch (error) {
     console.error(error);
