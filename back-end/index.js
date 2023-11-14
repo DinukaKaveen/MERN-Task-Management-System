@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(cors(
   {
     origin: ["https://mern-task-management-system-front-end.vercel.app"],
-    methods: ["POST", "GET", "UPDATE", "DELETE"],
+    methods: ["POST", "GET", "PUT", "DELETE"],
     credentials: true
   }
 ));
