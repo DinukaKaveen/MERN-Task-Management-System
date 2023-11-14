@@ -4,7 +4,7 @@ const router = express.Router();
 
 const nodemailer = require("nodemailer");
 const jwt = require("jsonwebtoken");
-const crypto = require('crypto');
+const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 
 const User = require("../models/user");
@@ -34,7 +34,7 @@ router.post("/register", async (req, res) => {
     await user.save();
 
     // Generate a verification token
-    const jwtSecretKey = crypto.randomBytes(32).toString('base64');
+    const jwtSecretKey = crypto.randomBytes(32).toString("hex");
     const token = jwt.sign({ userId: user._id }, jwtSecretKey, {
       expiresIn: "1d",
     });
@@ -51,7 +51,7 @@ router.post("/register", async (req, res) => {
       },
     });
 
-    const verificationLink = `${process.env.BASE_URL}/verify/${token}`;
+    const verificationLink = `${process.env.BASE_URL}/${user.id}/verify/${token}`;
 
     await transporter.sendMail({
       from: process.env.USER,
@@ -63,8 +63,30 @@ router.post("/register", async (req, res) => {
     res
       .status(201)
       .json({ message: "User registered. Check your email for verification." });
-      
+
   } 
+  catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// email verify
+router.get("/:id/verify/:token/", async (req, res) => {
+  try {
+    // Find the user with user id
+    const user = await User.findOne({ _id: req.params.id });
+
+    if (user) {
+      // Update the user to mark as verified
+      await User.updateOne({ _id: user._id, verified: true });
+
+      res.json({ message: "Email verification successful." });
+    } 
+    else {
+      res.json({ message: "User not found." }); 
+    }
+  }
   catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });
