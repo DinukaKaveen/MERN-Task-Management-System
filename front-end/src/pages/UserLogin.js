@@ -20,7 +20,7 @@ function UserLogin() {
       .post("/login", loginData)
       .then((response) => {
         if (response.data.success) {
-          setMessage(response.data.message);
+          window.location.href = "/tasks"
         } else {
           setMessage(response.data.message);
         }
