@@ -17,7 +17,7 @@ function UserLogin() {
     e.preventDefault();
 
     await axios
-      .post("https://mern-task-management-system-back-end.vercel.app/login", loginData)
+      .post("/login", loginData)
       .then((response) => {
         if (response.data.success) {
           window.location.href = "/tasks"
