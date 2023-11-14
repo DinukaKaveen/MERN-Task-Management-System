@@ -131,7 +131,7 @@ function UserRegister() {
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   If you have regisered?{" "}
                   <Link
-                    to={"/login"}
+                    to={"/"}
                     className="font-medium text-primary-600 hover:underline dark:text-primary-500"
                   >
                     Sign in
