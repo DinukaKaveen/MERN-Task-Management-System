@@ -44,16 +44,31 @@ function Home() {
     },
     {
       name: "Priority",
-      selector: (row) => row.priority,
       sortable: true,
+      selector: (row) => row.priority,
     },
     {
       name: "Task Status",
-      selector: (row) => row.taskStatus,
       sortable: true,
+      selector: (row) => (
+        <div>
+          {row.taskStatus === "Completed" && (
+            <span className="bg-green-100 text-green-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">
+              {row.taskStatus}
+            </span>
+          )}
+
+          {row.taskStatus === "Pending" && (
+            <span className="bg-yellow-100 text-yellow-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-yellow-900 dark:text-yellow-300">
+              {row.taskStatus}
+            </span>
+          )}
+        </div>
+      ),
     },
     {
       name: "Action",
+      width: "180px",
       selector: (row) => (
         <div>
           <Link
@@ -61,7 +76,7 @@ function Home() {
             type="button"
             className="text-yellow-400 hover:text-white border border-yellow-400 hover:bg-yellow-500 font-medium rounded-lg px-2.5 py-1.5 text-sm text-center mr-2 mb-2 dark:border-yellow-300 dark:text-yellow-300 dark:hover:text-white dark:hover:bg-yellow-400"
           >
-            <i className="fa-solid fa-edit"></i>
+            Update
           </Link>
 
           <button
@@ -69,7 +84,7 @@ function Home() {
             onClick={() => deleteTask(row._id)}
             className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 font-medium rounded-lg px-2.5 py-1.5 text-sm text-center mr-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600"
           >
-            <i className="fa-solid fa-trash"></i>
+            Delete
           </button>
         </div>
       ),
@@ -94,7 +109,7 @@ function Home() {
 
   return (
     <div>
-      <NavBar/>
+      <NavBar />
       <div className="p-4 sm:ml-64">
         <div className="p-4 border-2 border-gray-200 border-dashed rounded-lg dark:border-gray-700 mt-14">
           <nav className="flex mb-4" aria-label="Breadcrumb">
