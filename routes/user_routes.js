@@ -125,7 +125,7 @@ function sendVerificationEmail(email, user_id) {
     },
   });
 
-  const verificationLink = `${process.env.BASE_URL}/${user_id}/verify/${token}`;
+  const verificationLink = `${process.env.FRONT_END_URL}/${user_id}/verify/${token}`;
 
   transporter
     .sendMail({
