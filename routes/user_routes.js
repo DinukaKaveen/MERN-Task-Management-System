@@ -47,7 +47,7 @@ router.post("/register", async (req, res) => {
 });
 
 // email verify
-router.get("/:id/verify/:token/", async (req, res) => {
+router.get("/:id/verify/:token", async (req, res) => {
   try {
     // find the user with user id
     const user = await User.findOne({ _id: req.params.id });
