@@ -100,7 +100,6 @@ function UpdateTask() {
           <h2 className="mb-4 text-3xl font-extrabold leading-none tracking-tight text-gray-900 md:text-4xl dark:text-gray-700">
             Update Task
           </h2>
-          <br />
 
           <div>{message}</div>
           <br />
