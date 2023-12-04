@@ -109,9 +109,8 @@ router.post("/login", async (req, res) => {
 //-------------------------------------
 function sendVerificationEmail(email, user_id) {
   // Generate a verification token
-  const jwtSecretKey = crypto.randomBytes(32).toString("hex");
-  const token = jwt.sign({ userId: user_id }, jwtSecretKey, {
-    expiresIn: "1d",
+  const token = jwt.sign({ userId: user_id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
   // Send a verification email
